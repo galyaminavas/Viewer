@@ -9,20 +9,20 @@ import java.io.File
 internal class ParserTest{
     val testPath = "./bmp/"
     val images_8bit = arrayListOf<String>(
-             "${testPath}bogts_8bit.bmp",
-"${testPath}freebsd2_8bit.bmp",
-"${testPath}hm_8bit.bmp",
-"${testPath}man.bmp"
+            "${testPath}freebsd2_8bit.bmp",
+            "${testPath}bogts_8bit.bmp",
+            "${testPath}hm_8bit.bmp",
+            "${testPath}man.bmp"
     )
     val images_24bit = arrayListOf<String>(
-            "${testPath}beaut_24bit.bmp",
-"${testPath}dodj_24bit.bmp",
-"${testPath}love_24bit.bmp",
-"${testPath}ogon_24bit.bmp",
-"${testPath}per_24bit.bmp",
-"${testPath}su85_24bit.bmp",
             "${testPath}taet_led_24bit.bmp",
-"${testPath}warrios_24bit.bmp"
+            "${testPath}warrios_24bit.bmp",
+            "${testPath}beaut_24bit.bmp",
+            "${testPath}haker_24bit.bmp",
+            "${testPath}dodj_24bit.bmp",
+            "${testPath}ogon_24bit.bmp",
+            "${testPath}per_24bit.bmp",
+            "${testPath}su85_24bit.bmp"
     )
 
     @Test

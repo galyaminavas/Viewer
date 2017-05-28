@@ -5,7 +5,7 @@ import java.io.File
 class Parser24bit(file: File): Parser(file) {
 
     override fun parse() {
-        //preParse()
+
         var currentOffset = fileStructure["offsetBits"]!!
         val imageWidth = fileStructure["width"]!!
         val imageHeight = fileStructure["height"]!!
@@ -24,5 +24,6 @@ class Parser24bit(file: File): Parser(file) {
         }
 
         alertObservers()
+
     }
 }

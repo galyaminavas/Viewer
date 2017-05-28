@@ -1,6 +1,5 @@
 package model
 
-import view.*
 import view.Observer
 import java.awt.image.BufferedImage
 import java.io.File
@@ -15,17 +14,6 @@ abstract class Parser(val file: File): Observable {
     protected val colorTable = ArrayList<Int>()
     val image: BufferedImage
 
-    init {
-        preParse()
-        val imageWidth = fileBytesToInt(0x12, 4)
-        val imageHeight = fileBytesToInt(0x16, 4)
-
-        if (imageHeight < 0)
-            image = BufferedImage(imageWidth, -imageHeight, BufferedImage.TYPE_INT_RGB)
-        else
-            image = BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
-    }
-
     protected fun preParse() {
         val inputStream = FileInputStream(file)
         inputStream.read(fileBytes)
@@ -33,10 +21,13 @@ abstract class Parser(val file: File): Observable {
 
         fileStructure.put("fileSize", fileBytesToInt(0x02, 4))
         fileStructure.put("offsetBits", fileBytesToInt(0x0A, 4))
+
         val biSize = fileBytesToInt(0x0E, 4)
         fileStructure.put("biSize", biSize)
+
         val imageWidth = fileBytesToInt(0x12, 4)
         val imageHeight = fileBytesToInt(0x16, 4)
+
         fileStructure.put("width", imageWidth)
         fileStructure.put("height", imageHeight)
         val bitCount = fileBytesToInt(0x1C, 2)
@@ -57,6 +48,21 @@ abstract class Parser(val file: File): Observable {
                 currentOffset += colorSize
             }
         }
+        //added exception for corrupted image
+        if (fileBytes.size != fileStructure["fileSize"]) {
+            throw IllegalArgumentException("Corrupted Image")
+        }
+    }
+
+    init {
+        preParse()
+        val imageWidth = fileBytesToInt(0x12, 4)
+        val imageHeight = fileBytesToInt(0x16, 4)
+
+        if (imageHeight < 0)
+            image = BufferedImage(imageWidth, -imageHeight, BufferedImage.TYPE_INT_RGB)
+        else
+            image = BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
     }
 
     abstract fun parse()
@@ -73,6 +79,13 @@ abstract class Parser(val file: File): Observable {
         observers.forEach { it.eventChange(this.image) }
     }
 
-    protected fun fileBytesToInt(offset: Int, length: Int) = (0..length - 1).sumBy { ((fileBytes[offset + it].toInt() + 256) % 256) shl (8 * it) }
+    protected fun fileBytesToInt(offset: Int, length: Int): Int {
+        var sum = 0
+        for (iter in 0..length - 1)
+            sum += ((fileBytes[offset + iter].toInt() + 256) % 256) shl (8 * iter)
+        return sum
+
+
+    }
 
 }

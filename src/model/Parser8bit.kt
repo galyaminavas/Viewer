@@ -5,7 +5,7 @@ import java.io.File
 class Parser8bit(file: File): Parser(file) {
 
     override fun parse() {
-        //preParse()
+
         var currentOffset = fileStructure["offsetBits"]!!
         val imageWidth = fileStructure["width"]!!
         val imageHeight = fileStructure["height"]!!
@@ -20,6 +20,8 @@ class Parser8bit(file: File): Parser(file) {
             currentOffset += addition
             currentLine += vector
         }
+
         alertObservers()
+
     }
 }

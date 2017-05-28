@@ -8,6 +8,7 @@ import java.io.IOException
 
 
 class ControllerBMP: Controller {
+
     override fun validateFormat(file: File) {
         try {
             val parser = getParser(file)
@@ -16,16 +17,22 @@ class ControllerBMP: Controller {
         } catch (exception: IOException) {
             println("Can't read file: ${exception.message}")
         }
+        //exception for corrupted image
+        catch (exception: IllegalArgumentException) {
+            println("Parsing problem: ${exception.message}")
+        }
     }
 
     private fun getParser(file: File): Parser {
 
         val inputFile = FileInputStream(file)
+
         val header = ByteArray(0x0E)
         inputFile.read(header)
 
+        //check BM in header
         if (header[0].toInt() != 0x42 || header[1].toInt() != 0x4D)
-            throw Exception("Type is not bmp")
+            throw Exception("This is not BMP file")
 
         val sizeBI = inputFile.read() + (inputFile.read() shl 8) + (inputFile.read() shl 16) + (inputFile.read() shl 24)
         val info = ByteArray(0x10)
@@ -46,7 +53,7 @@ class ControllerBMP: Controller {
         return when (bitCount) {
             8 -> Parser8bit(file)
             24 -> Parser24bit(file)
-            else -> TODO("Пока неизвестный формат")
+            else -> throw Exception("Unknown format")
         }
     }
 }
